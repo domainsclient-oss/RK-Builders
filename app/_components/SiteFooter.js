@@ -13,7 +13,7 @@ export default function SiteFooter() {
           <p>We, M/s Rajkumaran Builders Pvt Ltd, (formerly known as M/s Chitra Constructions) introduce ourselves a renowned name in Construction, Consultants and Valuation, established in year 1983 is a single window facility to get variety of modern construction and techno-economic services at one place.</p>
           <div className="socials"><a href="#" aria-label="Facebook"><FaFacebookF size={17} /></a><a href="#" aria-label="Instagram"><FaInstagram size={17} /></a><a href="#" aria-label="YouTube"><FaYoutube size={17} /></a></div>
         </div>
-        <div><h4>Explore</h4><Link href="/about">About us</Link><Link href="/#values">Our values</Link><Link href="/services">Services</Link><Link href="/projects">Projects</Link></div>
+        <div><h4>Explore</h4><Link href="/">Home</Link><Link href="/about">About</Link><Link href="/services">Services</Link><Link href="/projects">Projects</Link><Link href="/contact">Contact</Link></div>
         <div><h4>Services</h4><Link href="/services">Residential construction</Link><Link href="/services">Commercial construction</Link><Link href="/services">Renovation</Link><Link href="/services">Project management</Link></div>
         <div>
           <h4>Contact</h4>
