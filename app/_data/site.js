@@ -12,6 +12,12 @@ export const navigation = [
 
 export const mapsLink = 'https://maps.app.goo.gl/dNFaFapxQnYg23mR9';
 
+export const socialLinks = {
+  facebook: 'https://www.facebook.com/Rajkumarbuilders03/',
+  instagram: 'https://www.instagram.com/rajkumar_builders_/',
+  youtube: 'https://www.youtube.com/@rajkumarbuilders',
+};
+
 export const services = [
   { icon: Building2, number: '01', title: 'Building Construction and Consultancy', image: `${imageBase}/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1400&q=85`, text: 'Working with tasks related to project management, inspecting the work of construction contractors, advising on sustainability, giving advice, and helping develop the project.' },
   { icon: Hammer, number: '02', title: 'Renovation and Retrofitting', image: `${imageBase}/photo-1517581177682-a085bb7ffb15?auto=format&fit=crop&w=1400&q=85`, text: 'Restoring or repairing a structure back to a good or "like new" condition to improve the functionality of a building by adding new technology, whereas remodeling centers around aesthetics.' },

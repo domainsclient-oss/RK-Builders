@@ -174,8 +174,12 @@ export default function ServicesPage() {
               <h2>Frequently asked questions</h2>
               <div className="services-page-faq-list">
                 {faqs.map((faq, index) => (
-                  <details key={faq.question} open={index === 0}>
-                    <summary>{faq.question}<span aria-hidden="true"><Plus className="faq-icon-open" size={18} strokeWidth={2} /><Minus className="faq-icon-close" size={18} strokeWidth={2} /></span></summary>
+                  <details key={faq.question} name="services-faq" open={index === 0}>
+                    <summary>
+                      <span className="faq-num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="faq-question">{faq.question}</span>
+                      <span className="faq-toggle" aria-hidden="true"><Plus className="faq-icon-open" size={18} strokeWidth={2} /><Minus className="faq-icon-close" size={18} strokeWidth={2} /></span>
+                    </summary>
                     <p>{faq.answer}</p>
                   </details>
                 ))}

@@ -3,18 +3,24 @@ import Link from 'next/link';
 import {
   ArrowDown,
   ArrowUpRight,
+  BrickWall,
   Building,
   Building2,
   Check,
+  Church,
   Construction,
   Factory,
+  Flag,
   Hammer,
+  House,
   IndianRupee,
+  Landmark,
   MapPin,
   Route,
   Ruler,
   ShieldCheck,
   Shirt,
+  Store,
   UserRound,
   Wrench,
 } from 'lucide-react';
@@ -23,6 +29,29 @@ import SiteHeader from '../_components/SiteHeader';
 import SiteFooter from '../_components/SiteFooter';
 import CtaBand from '../_components/CtaBand';
 import { projectRecord as milestones } from '../_data/site';
+
+const historyYears = milestones.flatMap((milestone) => milestone.year.match(/\d{4}/g) ?? []).map(Number);
+const historyRange = `${Math.min(...historyYears)}–${Math.max(...historyYears)}`;
+
+// Consecutive projects from the same year share one year heading on the timeline.
+const historyGroups = milestones.reduce((groups, milestone) => {
+  const last = groups[groups.length - 1];
+  if (last && last.year === milestone.year) last.items.push(milestone);
+  else groups.push({ year: milestone.year, items: [milestone] });
+  return groups;
+}, []);
+
+// Picks an icon that matches the kind of project, based on its name.
+const projectIcon = (title) => {
+  if (/church/i.test(title)) return Church;
+  if (/wall/i.test(title)) return BrickWall;
+  if (/apartment/i.test(title)) return Building;
+  if (/house/i.test(title)) return House;
+  if (/manufactur|fluid|tech/i.test(title)) return Factory;
+  if (/sweets/i.test(title)) return Store;
+  if (/anjuman|kshetropasna/i.test(title)) return Landmark;
+  return Building2;
+};
 
 const skills = [
   'Construction planning and delivery',
@@ -218,27 +247,56 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="about-history section-pad">
+        <section className="about-history section-pad" id="history">
           <div className="shell about-history-layout">
             <div className="about-history-heading">
               <span className="about-eyebrow">OUR HISTORY</span>
               <h2>A foundation built to last.</h2>
               <p>From our beginnings in 1983 to a connected set of services for modern projects.</p>
+              <ul className="about-history-stats">
+                <li><strong>{milestones.length}</strong> landmark projects</li>
+                <li><strong>{historyRange}</strong> highlighted</li>
+                <li><strong>Est. 1983</strong></li>
+              </ul>
             </div>
-            <ol className="about-timeline">
-              {milestones.map((milestone, index) => (
-                <li className="about-milestone" key={`${index}-${milestone.title}`}>
-                  <span className="about-milestone-marker" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                  <article className="about-milestone-card">
-                    <span className="about-milestone-year">{milestone.year}</span>
-                    <h3>{milestone.title}</h3>
-                    <dl className="about-milestone-meta">
-                      <div><dt><MapPin size={15} /><span>Location</span></dt><dd>{milestone.location}</dd></div>
-                      <div><dt><IndianRupee size={15} /><span>Project value</span></dt><dd>{milestone.value}</dd></div>
-                    </dl>
-                  </article>
+            <ol className="history-list">
+              {historyGroups.map((group) => (
+                <li className="history-group" key={group.year}>
+                  <span className="history-group-dot" aria-hidden="true" />
+                  <div className="history-group-head">
+                    <span className="history-group-year">{group.year}</span>
+                    {group.items.length > 1 && <span className="history-group-count">{group.items.length} projects</span>}
+                  </div>
+                  <ul className="history-group-items">
+                    {group.items.map((item) => {
+                      const Icon = projectIcon(item.title);
+                      return (
+                        <li className="history-entry" key={`${item.title}-${item.location}`}>
+                          <span className="history-entry-icon"><Icon size={22} strokeWidth={1.6} /></span>
+                          <div className="history-entry-text">
+                            <h3>{item.title}</h3>
+                            <p><MapPin size={14} />{item.location}</p>
+                          </div>
+                          <span className="history-entry-value"><IndianRupee size={13} strokeWidth={2.5} />{item.value}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </li>
               ))}
+              <li className="history-group history-group--origin">
+                <span className="history-group-dot" aria-hidden="true" />
+                <div className="history-group-head"><span className="history-group-year">1983</span></div>
+                <ul className="history-group-items">
+                  <li className="history-entry history-entry--origin">
+                    <span className="history-entry-icon"><Flag size={22} strokeWidth={1.6} /></span>
+                    <div className="history-entry-text">
+                      <h3>The beginning</h3>
+                      <p>Established as M/s Chitra Constructions.</p>
+                    </div>
+                  </li>
+                </ul>
+              </li>
             </ol>
           </div>
         </section>

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowDown,
+  ArrowUpRight,
   Clock,
   Mail,
   MapPin,
@@ -23,21 +24,25 @@ const contactDetails = [
       [{ text: '044-24829133', href: 'tel:+914424829133' }, { text: '044-24825565', href: 'tel:+914424825565' }],
       [{ text: '98840 34823', href: 'tel:+919884034823' }, { text: '96001 69118', href: 'tel:+919600169118' }],
     ],
+    action: { text: 'Call now', href: 'tel:+914424825565' },
   },
   {
     icon: Mail,
     label: 'Email us',
     lines: [[{ text: 'rajkumaran.malar@gmail.com', href: 'mailto:rajkumaran.malar@gmail.com' }]],
+    action: { text: 'Send an email', href: 'mailto:rajkumaran.malar@gmail.com' },
   },
   {
     icon: MapPin,
     label: 'Visit us',
     lines: [[{ text: '23, Chetty Street, Porur, Chennai 600116, India', href: mapsLink, external: true }]],
+    action: { text: 'Get directions', href: mapsLink, external: true },
   },
   {
     icon: Clock,
     label: 'Working hours',
     lines: [[{ text: 'Mon-Sat 9.30AM - 5.30PM' }]],
+    action: { text: 'Closed on Sundays' },
   },
 ];
 
@@ -89,23 +94,42 @@ export default function ContactPage() {
           </div>
         </section>
 
+        <section className="contact-quick" aria-label="Contact information">
+          <div className="shell">
+            <ul className="contact-quick-grid">
+              {contactDetails.map(({ icon: Icon, label, lines, action }) => (
+                <li key={label}>
+                  <Icon className="contact-quick-watermark" size={120} strokeWidth={1.25} aria-hidden="true" />
+                  <span className="contact-page-icon"><Icon size={22} strokeWidth={1.75} /></span>
+                  <small>{label}</small>
+                  {lines.map((items) => <DetailLine key={items[0].text} items={items} />)}
+                  {action && (action.href
+                    ? <a className="contact-quick-action" href={action.href} {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{action.text} <ArrowUpRight size={15} /></a>
+                    : <span className="contact-quick-action contact-quick-action--note">{action.text}</span>)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         <section className="contact-page-main section-pad" id="enquiry">
           <div className="shell contact-page-layout">
             <div className="contact-page-intro">
               <span className="about-eyebrow">CONTACT INFORMATION</span>
               <h2>Let&apos;s build something great together.</h2>
               <p>Reach us by phone, email, or visit our office. Or send an enquiry and our team will get back to you.</p>
-              <ul className="contact-page-details">
-                {contactDetails.map(({ icon: Icon, label, lines }) => (
-                  <li key={label}>
-                    <span className="contact-page-icon"><Icon size={20} strokeWidth={1.75} /></span>
-                    <div>
-                      <small>{label}</small>
-                      {lines.map((items) => <DetailLine key={items[0].text} items={items} />)}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="contact-page-photo">
+                <Image
+                  src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=85"
+                  alt="Rajkumaran Builders site team reviewing a project"
+                  fill
+                  sizes="(max-width: 1000px) 100vw, 45vw"
+                />
+                <div className="contact-page-photo-badge">
+                  <span><Clock size={18} strokeWidth={2} /></span>
+                  <p>We typically respond within one business day.</p>
+                </div>
+              </div>
             </div>
             <ContactForm />
           </div>

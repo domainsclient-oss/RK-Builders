@@ -1,8 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
+  ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   Building2,
   Check,
@@ -21,7 +23,7 @@ import {
   Trees,
 } from 'lucide-react';
 import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
-import { projects, services } from './_data/site';
+import { projects, services, socialLinks } from './_data/site';
 import SiteHeader from './_components/SiteHeader';
 
 const imageBase = 'https://images.unsplash.com';
@@ -53,39 +55,157 @@ function SectionIntro({ eyebrow, title, text, light = false }) {
 
 function CountUp({ value }) {
   const [count, setCount] = useState(0);
+  const ref = useRef(null);
 
+  // Start counting when the number scrolls into view, not on page load.
   useEffect(() => {
-    const duration = 1400;
-    const start = performance.now();
+    const duration = 1600;
     let frame;
-
-    const animate = (timestamp) => {
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(value * easedProgress));
-      if (progress < 1) frame = requestAnimationFrame(animate);
+    const run = () => {
+      const start = performance.now();
+      const animate = (timestamp) => {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        setCount(Math.round(value * easedProgress));
+        if (progress < 1) frame = requestAnimationFrame(animate);
+      };
+      frame = requestAnimationFrame(animate);
     };
 
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    if (!('IntersectionObserver' in window)) {
+      run();
+      return () => cancelAnimationFrame(frame);
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      run();
+    }, { threshold: 0.4 });
+    if (ref.current) observer.observe(ref.current);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, [value]);
 
-  return <strong>{count.toLocaleString('en-IN')}</strong>;
+  return <strong ref={ref}>{count.toLocaleString('en-IN')}</strong>;
 }
 
+const HERO_SLIDE_MS = 7000;
+
+const heroSlides = [
+  {
+    image: `${imageBase}/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2200&q=90`,
+    alt: 'Modern architectural structure under construction',
+    eyebrow: 'BUILDING TRUST. CREATING LEGACIES.',
+    title: 'Welcome To',
+    highlight: 'Rajkumaran Builders Pvt Ltd',
+    text: 'A TRADITION OF TRUST, WE CREATE, WE DESIGN, WE EXECUTE WITH PASSION AND ACCURACY.',
+    tagline: true,
+  },
+  {
+    image: `${imageBase}/photo-1503387837-b154d5074bd2?auto=format&fit=crop&w=2200&q=90`,
+    alt: 'Architect working on building plans',
+    title: 'From concept',
+    highlight: 'to creation.',
+    text: 'We have a team of highly qualified & experienced Engineers, who work directly on the assignments.',
+  },
+  {
+    image: `${imageBase}/photo-1508450859948-4e04fabaa4ea?auto=format&fit=crop&w=2200&q=90`,
+    alt: 'Multi-storey building frame under construction',
+    title: 'You Dream',
+    highlight: 'We build',
+    text: 'We maintain high degree of standards and unbiased reports .',
+  },
+];
+
 function Hero() {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [autoplay, setAutoplay] = useState(true);
+  const touchStart = useRef(null);
+  const slide = heroSlides[active];
+  const count = heroSlides.length;
+  const go = (index) => setActive((index + count) % count);
+
+  const remaining = useRef(HERO_SLIDE_MS);
+
+  // No autoplay for visitors who prefer reduced motion; they can use the arrows.
+  useEffect(() => {
+    setAutoplay(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
+  // A fresh slide gets the full time.
+  useEffect(() => {
+    remaining.current = HERO_SLIDE_MS;
+  }, [active]);
+
+  // Autoplay timer; pausing keeps the time left so the progress bar and timer stay in step.
+  useEffect(() => {
+    if (!autoplay || paused) return undefined;
+    const startedAt = Date.now();
+    const timer = window.setTimeout(() => setActive((current) => (current + 1) % count), remaining.current);
+    return () => {
+      window.clearTimeout(timer);
+      remaining.current = Math.max(0, remaining.current - (Date.now() - startedAt));
+    };
+  }, [active, paused, autoplay, count]);
+
+  const onTouchEnd = (event) => {
+    if (touchStart.current === null) return;
+    const distance = event.changedTouches[0].clientX - touchStart.current;
+    touchStart.current = null;
+    if (Math.abs(distance) > 50) go(active + (distance < 0 ? 1 : -1));
+  };
+
   return (
-    <section className="hero" id="home">
-      <Image className="hero-image" src={`${imageBase}/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2200&q=90`} alt="Modern architectural structure under construction" fill priority sizes="100vw" />
+    <section
+      className="hero"
+      id="home"
+      aria-roledescription="carousel"
+      aria-label="Highlights"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }}
+      onTouchEnd={onTouchEnd}
+    >
+      {heroSlides.map((item, index) => (
+        <Image key={item.image} className={`hero-image ${index === active ? 'is-active' : ''}`} src={item.image} alt={index === active ? item.alt : ''} fill priority={index === 0} sizes="100vw" />
+      ))}
       <div className="hero-shade" />
       <div className="hero-content shell">
-        <div className="hero-copy">
-          <span className="eyebrow eyebrow--gold">BUILDING TRUST. CREATING LEGACIES.</span>
-          <h1>Welcome To <em>Rajkumaran Builders Pvt Ltd</em></h1>
-          <p>A TRADITION OF TRUST, WE CREATE, WE DESIGN, WE EXECUTE WITH PASSION AND ACCURACY.</p>
-          <div className="hero-actions">
-            <a className="button button--gold" href="#projects">Explore Our Projects <ArrowUpRight size={17} /></a>
-            <a className="button button--outline-light" href="#contact">Get a Free Consultation</a>
+        <div className="hero-top">
+          <div className="hero-copy" key={active} aria-live={autoplay ? 'off' : 'polite'}>
+            {slide.eyebrow && <span className="eyebrow eyebrow--gold">{slide.eyebrow}</span>}
+            <h1>{slide.title} <em>{slide.highlight}</em></h1>
+            <p className={slide.tagline ? undefined : 'hero-lead'}>{slide.text}</p>
+            <div className="hero-actions">
+              <a className="button button--gold" href="#projects">Explore Our Projects <ArrowUpRight size={17} /></a>
+              <a className="button button--outline-light" href="#contact">Get a Free Consultation</a>
+            </div>
+          </div>
+          <div className="hero-slider-nav">
+            <span className="hero-slider-count"><strong>{String(active + 1).padStart(2, '0')}</strong> / {String(count).padStart(2, '0')}</span>
+            <div className="hero-slider-bars">
+              {heroSlides.map((item, index) => (
+                <button
+                  key={item.image}
+                  type="button"
+                  className={`hero-slider-bar ${index === active ? 'is-active' : ''} ${index < active ? 'is-done' : ''} ${paused ? 'is-paused' : ''} ${autoplay ? '' : 'is-manual'}`}
+                  onClick={() => go(index)}
+                  aria-label={`Show slide ${index + 1}`}
+                  aria-current={index === active ? 'true' : undefined}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
+            <div className="hero-slider-arrows">
+              <button type="button" onClick={() => go(active - 1)} aria-label="Previous slide"><ArrowLeft size={18} /></button>
+              <button type="button" onClick={() => go(active + 1)} aria-label="Next slide"><ArrowRight size={18} /></button>
+            </div>
           </div>
         </div>
         <div className="hero-bottom">
@@ -190,7 +310,7 @@ function Contact() {
 }
 
 function Footer() {
-  return <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><a className="brand brand--footer" href="#home"><span className="brand-logo"><Image src="/logo/footer-logo.png" alt="Rajkumaran Builders" fill sizes="180px" /></span></a><p>We, M/s Rajkumaran Builders Pvt Ltd, (formerly known as M/s Chitra Constructions) introduce ourselves a renowned name in Construction, Consultants and Valuation, established in year 1983 is a single window facility to get variety of modern construction and techno-economic services at one place.</p><div className="socials"><a href="#contact" aria-label="Facebook"><FaFacebookF size={17} /></a><a href="#contact" aria-label="Instagram"><FaInstagram size={17} /></a><a href="#contact" aria-label="YouTube"><FaYoutube size={17} /></a></div></div><div><h4>Explore</h4><a href="#home">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div><div><h4>Services</h4><a href="#services">Residential construction</a><a href="#services">Commercial construction</a><a href="#services">Renovation</a><a href="#services">Project management</a></div><div><h4>Contact</h4><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+914424829133">044-24829133</a>, <a href="tel:+914424825565">044-24825565</a></span></p><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+919884034823">98840 34823</a>, <a href="tel:+919600169118">96001 69118</a></span></p><a className="footer-contact-item" href="mailto:rajkumaran.malar@gmail.com"><Mail size={15} />rajkumaran.malar@gmail.com</a><p className="footer-contact-item"><Clock size={15} /><span>Mon-Sat 9.30AM - 5.30PM</span></p><a className="footer-contact-item" href="https://maps.app.goo.gl/dNFaFapxQnYg23mR9" target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span>23, Chetty Street, Porur<br />Chennai 600116, India</span></a></div></div><div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders. All rights reserved.</span><div><a href="#home">Privacy policy</a><a href="#home">Terms & conditions</a></div></div></footer>;
+  return <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><a className="brand brand--footer" href="#home"><span className="brand-logo"><Image src="/logo/footer-logo.png" alt="Rajkumaran Builders" fill sizes="180px" /></span></a><p>We, M/s Rajkumaran Builders Pvt Ltd, (formerly known as M/s Chitra Constructions) introduce ourselves a renowned name in Construction, Consultants and Valuation, established in year 1983 is a single window facility to get variety of modern construction and techno-economic services at one place.</p><div className="socials"><a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF size={17} /></a><a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram size={17} /></a><a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube size={17} /></a></div></div><div><h4>Explore</h4><a href="#home">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div><div><h4>Services</h4><a href="#services">Residential construction</a><a href="#services">Commercial construction</a><a href="#services">Renovation</a><a href="#services">Project management</a></div><div><h4>Contact</h4><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+914424829133">044-24829133</a>, <a href="tel:+914424825565">044-24825565</a></span></p><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+919884034823">98840 34823</a>, <a href="tel:+919600169118">96001 69118</a></span></p><a className="footer-contact-item" href="mailto:rajkumaran.malar@gmail.com"><Mail size={15} />rajkumaran.malar@gmail.com</a><p className="footer-contact-item"><Clock size={15} /><span>Mon-Sat 9.30AM - 5.30PM</span></p><a className="footer-contact-item" href="https://maps.app.goo.gl/dNFaFapxQnYg23mR9" target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span>23, Chetty Street, Porur<br />Chennai 600116, India</span></a></div></div><div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders. All rights reserved.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-and-conditions">Terms & conditions</a></div></div></footer>;
 }
 
 export default function HomePage() {

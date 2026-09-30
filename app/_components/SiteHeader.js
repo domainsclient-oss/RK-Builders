@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { navigation } from '../_data/site';
 
@@ -10,10 +10,18 @@ import { navigation } from '../_data/site';
 // so the logo, Home link and Get a Quote scroll within the page.
 export default function SiteHeader({ current, homeHref = '/', quoteHref = '/contact' }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const close = () => setOpen(false);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <header className="site-header">
+    <header className={`site-header ${scrolled ? 'site-header--scrolled' : ''}`}>
       <div className="nav-wrap">
         <Link className="brand" href={homeHref} onClick={close}>
           <span className="brand-logo"><Image src="/logo/logo.png" alt="Rajkumaran Builders" fill sizes="200px" /></span>
