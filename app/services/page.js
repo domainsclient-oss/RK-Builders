@@ -32,7 +32,7 @@ import {
 import SiteHeader from '../_components/SiteHeader';
 import SiteFooter from '../_components/SiteFooter';
 import CtaBand from '../_components/CtaBand';
-import { projectCategories, projects, services, siteStandards } from '../_data/site';
+import { featuredProjects, services, siteStandards } from '../_data/site';
 
 // Icons for the "What we follow" list, in the same order as siteStandards.
 const standardIcons = [FileCheck, Landmark, Award, Lock, Handshake, Target, ScrollText];
@@ -48,8 +48,6 @@ const allServices = [
   { icon: Zap, title: 'Electricity', text: 'Lorem Ipsum is simply dummy text of the printing and setting as Planning your ambitions.' },
   { icon: PaintRoller, title: 'Refurbishment', text: 'Lorem Ipsum is simply dummy text of the printing and setting as Planning your ambitions.' },
 ];
-
-const featuredProjects = projectCategories.map((category) => projects.find((project) => project.category === category)).filter(Boolean);
 
 const faqs = [
   { question: 'Choose between rates or instant payment', answer: 'Motivate others and change the way we feel about ourselves. This is why I find them so interesting and crucial on our paths to success mauris accumsan eros eget libero posuere vulputate. Etiam elit elit, elementum sed varius at, adipiscing vitae est. Sed nec felis pellentesque, lacinia dui sed, ultricies sapien. Pellentesque orci consectetur vel posuere posuere, rutrum eu ipsum. Cost is important.' },

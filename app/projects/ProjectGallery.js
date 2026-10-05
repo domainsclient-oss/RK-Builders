@@ -4,13 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { projects } from '../_data/site';
+import { featuredProjects, projectCategories } from '../_data/site';
 
-const filters = ['All', ...new Set(projects.map((project) => project.category))];
+const filters = ['All', ...projectCategories];
 
 export default function ProjectGallery() {
   const [filter, setFilter] = useState('All');
-  const visible = filter === 'All' ? projects : projects.filter((project) => project.category === filter);
+  const visible = filter === 'All' ? featuredProjects : featuredProjects.filter((project) => project.category === filter);
 
   return (
     <>

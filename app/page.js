@@ -16,6 +16,7 @@ import {
   MapPin,
   MessageCircle,
   Phone,
+  Quote,
   Ruler,
   ShieldCheck,
   Sparkles,
@@ -23,8 +24,9 @@ import {
   Trees,
 } from 'lucide-react';
 import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
-import { projects, services, socialLinks } from './_data/site';
+import { featuredProjects, mapsLink, projectCategories, services, socialLinks } from './_data/site';
 import SiteHeader from './_components/SiteHeader';
+import EnquiryForm from './_components/EnquiryForm';
 
 const imageBase = 'https://images.unsplash.com';
 
@@ -282,9 +284,8 @@ function Services() {
 
 function Projects() {
   const [filter, setFilter] = useState('All');
-  const filters = ['All', 'Commercial', 'Education', 'Hospital', 'Residential', 'Office', 'Reconstruction'];
-  const firstInCategory = (category) => projects.find((project) => project.category === category);
-  const visible = (filter === 'All' ? filters.slice(1) : [filter]).map(firstInCategory).filter(Boolean);
+  const filters = ['All', ...projectCategories];
+  const visible = filter === 'All' ? featuredProjects : featuredProjects.filter((project) => project.category === filter);
   return (
     <section className="projects-section section-pad" id="projects">
       <div className="shell"><div className="projects-head"><SectionIntro eyebrow="SELECTED WORK" title="Featured projects" text="A showcase of spaces built with precision, passion, and purpose." /><div className="filter-tabs" role="tablist">{filters.map((item) => <button key={item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} role="tab" aria-selected={filter === item}>{item}</button>)}</div></div>
@@ -298,19 +299,47 @@ function Testimonials() {
   const [active, setActive] = useState(0);
   const testimonial = testimonials[active];
   return (
-    <section className="testimonials-section section-pad" id="testimonials"><div className="shell testimonial-layout"><div className="testimonial-intro"><SectionIntro eyebrow="CLIENT STORIES" title="What our clients say" text="The measure of our work is how it lives in the hands of the people we build for." /><div className="testimonial-controls"><button onClick={() => setActive((active - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial"><ChevronLeft size={18} /></button><span>0{active + 1} <i /> 0{testimonials.length}</span><button onClick={() => setActive((active + 1) % testimonials.length)} aria-label="Next testimonial"><ChevronRight size={18} /></button></div></div><div className="testimonial-card"><div className="quote-mark">“</div><div className="stars">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill="currentColor" />)}</div><blockquote>{testimonial.quote}</blockquote><div className="client"><span className="avatar">{testimonial.initials}</span><span><strong>{testimonial.name}</strong><small>{testimonial.project}</small></span></div></div></div></section>
+    <section className="testimonials-section section-pad" id="testimonials">
+      <div className="shell testimonial-layout">
+        <div className="testimonial-intro">
+          <SectionIntro light eyebrow="CLIENT STORIES" title="What our clients say" text="The measure of our work is how it lives in the hands of the people we build for." />
+          <ul className="testimonial-clients">
+            {testimonials.map((item, index) => (
+              <li key={item.name}>
+                <button type="button" className={index === active ? 'is-active' : ''} onClick={() => setActive(index)} aria-pressed={index === active}>
+                  <span className="avatar">{item.initials}</span>
+                  <span><strong>{item.name}</strong><small>{item.project}</small></span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="testimonial-controls">
+            <button onClick={() => setActive((active - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial"><ChevronLeft size={18} /></button>
+            <span>0{active + 1} <i /> 0{testimonials.length}</span>
+            <button onClick={() => setActive((active + 1) % testimonials.length)} aria-label="Next testimonial"><ChevronRight size={18} /></button>
+          </div>
+        </div>
+        <div className="testimonial-card" key={active} aria-live="polite">
+          <div className="testimonial-card-top">
+            <span className="quote-mark" aria-hidden="true"><Quote size={26} fill="currentColor" strokeWidth={0} /></span>
+            <div className="stars">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill="currentColor" />)}</div>
+          </div>
+          <blockquote>{testimonial.quote}</blockquote>
+          <div className="client"><span className="avatar">{testimonial.initials}</span><span><strong>{testimonial.name}</strong><small>{testimonial.project}</small></span></div>
+        </div>
+      </div>
+    </section>
   );
 }
 
 function Contact() {
-  const [submitted, setSubmitted] = useState(false);
   return (
-    <section className="contact-section section-pad" id="contact"><div className="shell contact-wrap"><div className="contact-intro"><SectionIntro light eyebrow="LET'S TALK" title="Let's build something great together." text="Have a project in mind? Talk to our team and let's turn your vision into reality." /><div className="contact-details"><a href="tel:+914424825565"><Phone size={17} /><span><small>Call us</small>044-24825565</span></a><a href="mailto:rajkumaran.malar@gmail.com"><Mail size={17} /><span><small>Email us</small>rajkumaran.malar@gmail.com</span></a><a href="https://maps.app.goo.gl/dNFaFapxQnYg23mR9" target="_blank" rel="noopener noreferrer"><Building2 size={17} /><span><small>Visit us</small>23, Chetty Street, Porur, Chennai 600116</span></a></div></div><form className="enquiry-form" onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }}><div className="form-top"><span>Start a conversation</span><small>We typically respond within one business day.</small></div><div className="form-row"><label>Full name<input required type="text" placeholder="Your name" /></label><label>Phone number<input required type="tel" placeholder="+91 00000 00000" /></label></div><div className="form-row"><label>Email address<input required type="email" placeholder="you@example.com" /></label><label>Project type<select defaultValue=""><option value="" disabled>Select a service</option><option>Residential Construction</option><option>Commercial Construction</option><option>Renovation & Remodeling</option><option>Project Management</option></select></label></div><label>Tell us about your project<textarea required rows="4" placeholder="A few details about your project, location, and timeline..." /></label><button className="button button--gold button--full" type="submit">{submitted ? 'Enquiry received' : 'Send enquiry'} {submitted ? <Check size={17} /> : <ArrowUpRight size={17} />}</button>{submitted && <p className="form-success">Thank you. Our team will be in touch shortly.</p>}</form></div></section>
+    <section className="contact-section section-pad" id="contact"><div className="shell contact-wrap"><div className="contact-intro"><SectionIntro light eyebrow="LET'S TALK" title="Let's build something great together." text="Have a project in mind? Talk to our team and let's turn your vision into reality." /><div className="contact-details"><a href="tel:+914424825565"><Phone size={17} /><span><small>Call us</small>044-24825565</span></a><a href="mailto:rajkumaran.malar@gmail.com"><Mail size={17} /><span><small>Email us</small>rajkumaran.malar@gmail.com</span></a><a href={mapsLink} target="_blank" rel="noopener noreferrer"><Building2 size={17} /><span><small>Visit us</small>23, Chetty Street, Porur, Chennai 600116</span></a></div></div><EnquiryForm title="Start a conversation" source="Home page" /></div></section>
   );
 }
 
 function Footer() {
-  return <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><a className="brand brand--footer" href="#home"><span className="brand-logo"><Image src="/logo/footer-logo.png" alt="Rajkumaran Builders" fill sizes="180px" /></span></a><p>We, M/s Rajkumaran Builders Pvt Ltd, (formerly known as M/s Chitra Constructions) introduce ourselves a renowned name in Construction, Consultants and Valuation, established in year 1983 is a single window facility to get variety of modern construction and techno-economic services at one place.</p><div className="socials"><a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF size={17} /></a><a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram size={17} /></a><a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube size={17} /></a></div></div><div><h4>Explore</h4><a href="#home">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div><div><h4>Services</h4><a href="#services">Residential construction</a><a href="#services">Commercial construction</a><a href="#services">Renovation</a><a href="#services">Project management</a></div><div><h4>Contact</h4><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+914424829133">044-24829133</a>, <a href="tel:+914424825565">044-24825565</a></span></p><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+919884034823">98840 34823</a>, <a href="tel:+919600169118">96001 69118</a></span></p><a className="footer-contact-item" href="mailto:rajkumaran.malar@gmail.com"><Mail size={15} />rajkumaran.malar@gmail.com</a><p className="footer-contact-item"><Clock size={15} /><span>Mon-Sat 9.30AM - 5.30PM</span></p><a className="footer-contact-item" href="https://maps.app.goo.gl/dNFaFapxQnYg23mR9" target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span>23, Chetty Street, Porur<br />Chennai 600116, India</span></a></div></div><div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders. All rights reserved.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-and-conditions">Terms & conditions</a></div></div></footer>;
+  return <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><a className="brand brand--footer" href="#home"><span className="brand-logo"><Image src="/logo/footer-logo.png" alt="Rajkumaran Builders" fill sizes="180px" /></span></a><p>We, M/s Rajkumaran Builders Pvt Ltd, (formerly known as M/s Chitra Constructions) introduce ourselves a renowned name in Construction, Consultants and Valuation, established in year 1983 is a single window facility to get variety of modern construction and techno-economic services at one place.</p><div className="socials"><a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF size={17} /></a><a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram size={17} /></a><a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube size={17} /></a></div></div><div><h4>Explore</h4><a href="#home">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div><div><h4>Services</h4><a href="#services">Residential construction</a><a href="#services">Commercial construction</a><a href="#services">Renovation</a><a href="#services">Project management</a></div><div><h4>Contact</h4><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+914424829133">044-24829133</a>, <a href="tel:+914424825565">044-24825565</a></span></p><p className="footer-contact-item"><Phone size={15} /><span><a href="tel:+919884034823">98840 34823</a>, <a href="tel:+919600169118">96001 69118</a></span></p><a className="footer-contact-item" href="mailto:rajkumaran.malar@gmail.com"><Mail size={15} />rajkumaran.malar@gmail.com</a><p className="footer-contact-item"><Clock size={15} /><span>Mon-Sat 9.30AM - 5.30PM</span></p><a className="footer-contact-item" href={mapsLink} target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span>23, Chetty Street, Porur<br />Chennai 600116, India</span></a></div></div><div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders. All rights reserved.</span><div><a href="/privacy-policy">Privacy policy</a><a href="/terms-and-conditions">Terms & conditions</a></div></div></footer>;
 }
 
 export default function HomePage() {

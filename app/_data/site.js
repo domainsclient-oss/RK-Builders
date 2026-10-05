@@ -10,7 +10,7 @@ export const navigation = [
   { label: 'Contact', href: '/contact' },
 ];
 
-export const mapsLink = 'https://maps.app.goo.gl/dNFaFapxQnYg23mR9';
+export const mapsLink = 'https://maps.app.goo.gl/Sr6nv6MkxNWBA8FF8';
 
 export const socialLinks = {
   facebook: 'https://www.facebook.com/Rajkumarbuilders03/',
@@ -49,6 +49,12 @@ export const projects = [
   { title: 'Meridian Corporate Office', location: 'Guindy, Chennai', category: 'Office', image: `${imageBase}/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=85`, text: 'An open-plan corporate floor with meeting rooms, breakout spaces, and efficient services.' },
   { title: 'Heritage Bungalow Restoration', location: 'Mylapore, Chennai', category: 'Reconstruction', image: `${imageBase}/photo-1517581177682-a085bb7ffb15?auto=format&fit=crop&w=1400&q=85`, text: 'Structural strengthening and careful rebuilding that give a heritage home a second life.' },
 ];
+
+// The projects shown in "Featured projects" on the Home and Projects pages: the first project
+// listed in each category. Reorder `projects` to change which one represents a category.
+export const featuredProjects = projectCategories
+  .map((category) => projects.find((project) => project.category === category))
+  .filter(Boolean);
 
 // Completed works, newest first. Shown as the About page history timeline and the Projects page record.
 export const projectRecord = [

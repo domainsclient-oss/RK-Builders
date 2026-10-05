@@ -12,7 +12,7 @@ import {
 import SiteHeader from '../_components/SiteHeader';
 import SiteFooter from '../_components/SiteFooter';
 import { mapsLink } from '../_data/site';
-import ContactForm from './ContactForm';
+import EnquiryForm from '../_components/EnquiryForm';
 
 const mapEmbed = 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3887.0433651063327!2d80.157203!3d13.0329105!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5261156e169035%3A0xe874a912f655c8eb!2sRAJKUMARAN%20BUILDERS%20PVT%20LTD!5e0!3m2!1sen!2sin!4v1790581599336!5m2!1sen!2sin';
 
@@ -131,7 +131,7 @@ export default function ContactPage() {
                 </div>
               </div>
             </div>
-            <ContactForm />
+            <EnquiryForm title="Send us an enquiry" className="contact-page-form" rows={5} source="Contact page" />
           </div>
         </section>
 
