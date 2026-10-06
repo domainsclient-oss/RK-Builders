@@ -44,7 +44,7 @@ export default function ProjectsPage() {
           <div className="shell">
             <div className="about-section-heading">
               <div><span className="about-eyebrow">FEATURED PROJECTS</span><h2>Spaces built to last.</h2></div>
-              <p>Browse our work across residential, commercial, institutional, and reconstruction projects.</p>
+              <p>Browse our work across residential, commercial, office, and reconstruction projects.</p>
             </div>
             <ProjectGallery />
           </div>
