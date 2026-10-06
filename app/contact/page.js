@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import SiteHeader from '../_components/SiteHeader';
 import SiteFooter from '../_components/SiteFooter';
-import { mapsLink } from '../_data/site';
+import { directionsLink, mapsLink } from '../_data/site';
 import EnquiryForm from '../_components/EnquiryForm';
 
 const mapEmbed = 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3887.0433651063327!2d80.157203!3d13.0329105!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5261156e169035%3A0xe874a912f655c8eb!2sRAJKUMARAN%20BUILDERS%20PVT%20LTD!5e0!3m2!1sen!2sin!4v1790581599336!5m2!1sen!2sin';
@@ -36,7 +36,7 @@ const contactDetails = [
     icon: MapPin,
     label: 'Visit us',
     lines: [[{ text: '23, Chetty Street, Porur, Chennai 600116, India', href: mapsLink, external: true }]],
-    action: { text: 'Get directions', href: mapsLink, external: true },
+    action: { text: 'Get directions', href: directionsLink, external: true },
   },
   {
     icon: Clock,
@@ -154,7 +154,7 @@ export default function ContactPage() {
                 <div>
                   <strong>Rajkumaran Builders Pvt Ltd</strong>
                   <span>23, Chetty Street, Porur, Chennai 600116</span>
-                  <a href={mapsLink} target="_blank" rel="noopener noreferrer">Get directions <Navigation size={14} /></a>
+                  <a href={directionsLink} target="_blank" rel="noopener noreferrer">Get directions <Navigation size={14} /></a>
                 </div>
               </div>
             </div>

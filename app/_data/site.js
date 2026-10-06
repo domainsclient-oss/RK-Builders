@@ -10,7 +10,13 @@ export const navigation = [
   { label: 'Contact', href: '/contact' },
 ];
 
-export const mapsLink = 'https://maps.app.goo.gl/Sr6nv6MkxNWBA8FF8';
+// Full Google Maps links. Avoid maps.app.goo.gl short links: Google retired its goo.gl
+// shortener and those links can fail to open.
+const officeAddress = 'Rajkumaran Builders Pvt Ltd, 23, Chetty Street, Porur, Chennai 600116';
+// Opens the office on Google Maps.
+export const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(officeAddress)}`;
+// Opens Google Maps directions to the office.
+export const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(officeAddress)}`;
 
 export const socialLinks = {
   facebook: 'https://www.facebook.com/Rajkumarbuilders03/',

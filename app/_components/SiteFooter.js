@@ -24,7 +24,7 @@ export default function SiteFooter() {
           <a className="footer-contact-item" href={mapsLink} target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span>23, Chetty Street, Porur<br />Chennai 600116, India</span></a>
         </div>
       </div>
-      <div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders. All rights reserved.</span><div><Link href="/privacy-policy">Privacy policy</Link><Link href="/terms-and-conditions">Terms & conditions</Link></div></div>
+      <div className="shell footer-bottom"><span>© 2026 Rajkumaran Builders Pvt Ltd. All rights reserved.</span><div><Link href="/privacy-policy">Privacy policy</Link><Link href="/terms-and-conditions">Terms & conditions</Link></div></div>
     </footer>
   );
 }
