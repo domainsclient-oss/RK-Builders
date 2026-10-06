@@ -21,15 +21,13 @@ export default function ProjectGallery() {
       </div>
       <div className="projects-grid projects-page-grid">
         {visible.map((project) => (
-          <article className="project-card" key={project.title}>
+          <article className="project-card project-card--compact" key={project.title}>
             <div className="project-image">
-              <Image src={project.image} alt={project.title} fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" />
+              <Image src={project.image} alt={`${project.category} project`} fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" />
               <span>{project.category}</span>
             </div>
             <div className="project-info">
-              <div><h3>{project.title}</h3><p>{project.location}</p></div>
-              <p className="project-text">{project.text}</p>
-              <Link href="/contact">Discuss a similar project <ArrowUpRight size={15} /></Link>
+              <Link href="/contact">Contact <ArrowUpRight size={15} /></Link>
             </div>
           </article>
         ))}

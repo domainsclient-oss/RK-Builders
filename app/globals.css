@@ -204,6 +204,8 @@ img { object-fit: cover; }
 .project-info > div p { margin: 0; color: var(--gold); font-size: 12px; font-weight: 600; letter-spacing: .02em; }
 .project-text { margin: 12px 0 20px; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
 .project-info a { justify-content: space-between; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); transition: color .2s ease; }
+.project-card--compact .project-info { padding: 18px 22px; }
+.project-card--compact .project-info a { margin-top: 0; padding-top: 0; border-top: 0; }
 .project-info a:hover { color: var(--gold-dark); }
 
 /* Testimonials */
